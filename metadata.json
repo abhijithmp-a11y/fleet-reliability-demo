@@ -1,0 +1,5 @@
+{
+  "name": "Fleet Reliability Dashboard",
+  "description": "A comprehensive monitoring dashboard for AI/ML infrastructure fleet reliability, featuring real-time KPIs, capacity funnel analysis, and reliability trends.",
+  "requestFramePermissions": []
+}
