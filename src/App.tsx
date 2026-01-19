@@ -271,81 +271,8 @@ export default function App() {
             </div>
           </div>
 
-          {/* Charts Section */}
-          <div className="grid grid-cols-1 gap-6 mb-8">
-            {/* Line Chart */}
-            <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider">Fleet-wide reliability trends & recommendations</h3>
-                <Info size={14} className="text-gray-400" />
-              </div>
-              <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={trendData}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                    <XAxis 
-                      dataKey="name" 
-                      axisLine={false} 
-                      tickLine={false} 
-                      tick={{ fontSize: 12, fill: '#94a3b8' }} 
-                    />
-                    <YAxis 
-                      axisLine={false} 
-                      tickLine={false} 
-                      tick={{ fontSize: 12, fill: '#94a3b8' }}
-                      domain={[60, 100]}
-                    />
-                    <Tooltip 
-                      contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                    />
-                    <Legend 
-                      verticalAlign="bottom" 
-                      height={36} 
-                      iconType="circle"
-                      wrapperStyle={{ fontSize: '12px', paddingTop: '20px' }}
-                    />
-                    <Line type="monotone" dataKey="activation" name="Activation rate" stroke="#f59e0b" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 6 }} />
-                    <Line type="monotone" dataKey="availability" name="Availability rate" stroke="#10b981" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 6 }} />
-                    <Line type="monotone" dataKey="scheduling" name="Scheduling rate" stroke="#3b82f6" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 6 }} />
-                    <Line type="monotone" dataKey="utilization" name="Utilization rate" stroke="#ec4899" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 6 }} />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-
-              {/* Insights */}
-              <div className="mt-8 space-y-4">
-                <div className="flex items-center gap-2 text-sm font-semibold text-blue-700 mb-2">
-                  <Activity size={16} />
-                  Reliability insights & recommendations
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="bg-orange-50 border border-orange-100 p-4 rounded-lg flex gap-3">
-                    <AlertTriangle className="text-orange-500 shrink-0" size={20} />
-                    <div>
-                      <h4 className="text-sm font-bold text-orange-900">Underutilized reservation</h4>
-                      <p className="text-xs text-orange-800 mt-1">Res-A100-EU is at 45% utilization. Consider moving Spot workloads here to optimize cost.</p>
-                      <button className="text-xs font-bold text-orange-700 mt-3 flex items-center gap-1 hover:underline">
-                        View reservation <ChevronRight size={12} />
-                      </button>
-                    </div>
-                  </div>
-                  <div className="bg-red-50 border border-red-100 p-4 rounded-lg flex gap-3">
-                    <AlertCircle className="text-red-500 shrink-0" size={20} />
-                    <div>
-                      <h4 className="text-sm font-bold text-red-900">Straggler node detected</h4>
-                      <p className="text-xs text-red-800 mt-1">Node-gke-4 causing 15% slowdown in Job-beta-991. Hardware replacement recommended.</p>
-                      <button className="text-xs font-bold text-red-700 mt-3 flex items-center gap-1 hover:underline">
-                        Inspect job <ChevronRight size={12} />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
           {/* Bottom Tables */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
               <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider mb-6">Domain monitoring</h3>
               <div className="relative mb-4">
@@ -429,6 +356,79 @@ export default function App() {
                     ))}
                   </tbody>
                 </table>
+              </div>
+            </div>
+          </div>
+
+          {/* Charts Section */}
+          <div className="grid grid-cols-1 gap-6">
+            {/* Line Chart */}
+            <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider">Fleet-wide reliability trends & recommendations</h3>
+                <Info size={14} className="text-gray-400" />
+              </div>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={trendData}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                    <XAxis 
+                      dataKey="name" 
+                      axisLine={false} 
+                      tickLine={false} 
+                      tick={{ fontSize: 12, fill: '#94a3b8' }} 
+                    />
+                    <YAxis 
+                      axisLine={false} 
+                      tickLine={false} 
+                      tick={{ fontSize: 12, fill: '#94a3b8' }}
+                      domain={[60, 100]}
+                    />
+                    <Tooltip 
+                      contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                    />
+                    <Legend 
+                      verticalAlign="bottom" 
+                      height={36} 
+                      iconType="circle"
+                      wrapperStyle={{ fontSize: '12px', paddingTop: '20px' }}
+                    />
+                    <Line type="monotone" dataKey="activation" name="Activation rate" stroke="#f59e0b" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 6 }} />
+                    <Line type="monotone" dataKey="availability" name="Availability rate" stroke="#10b981" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 6 }} />
+                    <Line type="monotone" dataKey="scheduling" name="Scheduling rate" stroke="#3b82f6" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 6 }} />
+                    <Line type="monotone" dataKey="utilization" name="Utilization rate" stroke="#ec4899" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 6 }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* Insights */}
+              <div className="mt-8 space-y-4">
+                <div className="flex items-center gap-2 text-sm font-semibold text-blue-700 mb-2">
+                  <Activity size={16} />
+                  Reliability insights & recommendations
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="bg-orange-50 border border-orange-100 p-4 rounded-lg flex gap-3">
+                    <AlertTriangle className="text-orange-500 shrink-0" size={20} />
+                    <div>
+                      <h4 className="text-sm font-bold text-orange-900">Underutilized reservation</h4>
+                      <p className="text-xs text-orange-800 mt-1">Res-A100-EU is at 45% utilization. Consider moving Spot workloads here to optimize cost.</p>
+                      <button className="text-xs font-bold text-orange-700 mt-3 flex items-center gap-1 hover:underline">
+                        View reservation <ChevronRight size={12} />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="bg-red-50 border border-red-100 p-4 rounded-lg flex gap-3">
+                    <AlertCircle className="text-red-500 shrink-0" size={20} />
+                    <div>
+                      <h4 className="text-sm font-bold text-red-900">Straggler node detected</h4>
+                      <p className="text-xs text-red-800 mt-1">Node-gke-4 causing 15% slowdown in Job-beta-991. Hardware replacement recommended.</p>
+                      <button className="text-xs font-bold text-red-700 mt-3 flex items-center gap-1 hover:underline">
+                        Inspect job <ChevronRight size={12} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
