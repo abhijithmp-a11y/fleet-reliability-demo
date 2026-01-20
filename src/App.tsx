@@ -72,6 +72,26 @@ const domainMonitoringData = [
   { name: 'domain-zeta', gpus: 18, hasSlo: false },
 ];
 
+const observabilityMetricsData = [
+  { time: '00:00', temp: 62, power: 240, sm: 75 },
+  { time: '04:00', temp: 64, power: 260, sm: 78 },
+  { time: '08:00', temp: 68, power: 310, sm: 85 },
+  { time: '12:00', temp: 65, power: 280, sm: 82 },
+  { time: '16:00', temp: 63, power: 250, sm: 80 },
+  { time: '20:00', temp: 66, power: 290, sm: 84 },
+  { time: '23:59', temp: 65, power: 280, sm: 82 },
+];
+
+const top5GpuData = [
+  { time: '00:00', g1: 62, g2: 60, g3: 58, g4: 55, g5: 52, p1: 240, p2: 230, p3: 220, p4: 210, p5: 200, s1: 75, s2: 72, s3: 70, s4: 68, s5: 65 },
+  { time: '04:00', g1: 64, g2: 62, g3: 60, g4: 57, g5: 54, p1: 260, p2: 250, p3: 240, p4: 230, p5: 220, s1: 78, s2: 75, s3: 73, s4: 71, s5: 68 },
+  { time: '08:00', g1: 68, g2: 66, g3: 64, g4: 61, g5: 58, p1: 310, p2: 300, p3: 290, p4: 280, p5: 270, s1: 85, s2: 82, s3: 80, s4: 78, s5: 75 },
+  { time: '12:00', g1: 65, g2: 63, g3: 61, g4: 58, g5: 55, p1: 280, p2: 270, p3: 260, p4: 250, p5: 240, s1: 82, s2: 79, s3: 77, s4: 75, s5: 72 },
+  { time: '16:00', g1: 63, g2: 61, g3: 59, g4: 56, g5: 53, p1: 250, p2: 240, p3: 230, p4: 220, p5: 210, s1: 80, s2: 77, s3: 75, s4: 73, s5: 70 },
+  { time: '20:00', g1: 66, g2: 64, g3: 62, g4: 59, g5: 56, p1: 290, p2: 280, p3: 270, p4: 260, p5: 250, s1: 84, s2: 81, s3: 79, s4: 77, s5: 74 },
+  { time: '23:59', g1: 65, g2: 63, g3: 61, g4: 58, g5: 55, p1: 280, p2: 270, p3: 260, p4: 250, p5: 240, s1: 82, s2: 79, s3: 77, s4: 75, s5: 72 },
+];
+
 // --- Components ---
 
 const SidebarItem = ({ icon: Icon, label, active = false, badge = false, subItems = [] }: any) => (
@@ -117,12 +137,55 @@ const StatCard = ({ title, value, subValue, trend, color, info = false }: any) =
       <div className="flex items-center gap-2 mt-1">
         <span className={cn(
           "text-xs font-semibold",
-          trend?.startsWith('+') || trend?.includes('Healthy') || trend?.includes('Within') ? "text-emerald-600" : "text-red-500"
+          trend?.startsWith('+') || trend?.includes('Healthy') || trend?.includes('Within') || trend === 'Stable' ? "text-emerald-600" : "text-red-500"
         )}>
           {trend}
         </span>
         <span className="text-xs text-gray-400">{subValue}</span>
       </div>
+    </div>
+  </div>
+);
+
+const MetricTimeSeriesCard = ({ title, value, data, dataKeys, color, unit }: any) => (
+  <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm flex flex-col h-64">
+    <div className="flex justify-between items-start mb-2">
+      <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider">{title}</h3>
+      <Info size={14} className="text-gray-400 cursor-help" />
+    </div>
+    <div className="mb-2">
+      <span className="text-2xl font-bold text-gray-900">{value}{unit}</span>
+      <span className="text-[10px] text-gray-400 ml-2">Top 5 GPUs</span>
+    </div>
+    <div className="flex-1 min-h-0">
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart data={data}>
+          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+          <XAxis 
+            dataKey="time" 
+            hide
+          />
+          <YAxis 
+            hide
+            domain={['auto', 'auto']}
+          />
+          <Tooltip 
+            contentStyle={{ fontSize: '10px', borderRadius: '4px', border: 'none', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}
+          />
+          {dataKeys.map((key: string, i: number) => (
+            <Line 
+              key={key}
+              type="monotone" 
+              dataKey={key} 
+              stroke={color} 
+              strokeWidth={2}
+              dot={false}
+              opacity={1 - (i * 0.15)}
+              name={`GPU ${i + 1}`}
+            />
+          ))}
+        </LineChart>
+      </ResponsiveContainer>
     </div>
   </div>
 );
@@ -229,13 +292,6 @@ export default function App() {
             <StatCard title="Healthy chips" value="4,850" trend="97%" subValue="vs last 24h" color="green" />
             <StatCard title="Degraded chips" value="125" trend="2.5%" subValue="vs last 24h" color="orange" />
             <StatCard title="Unhealthy chips" value="25" trend="0.5%" subValue="vs last 24h" color="red" />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <StatCard title="Fleet utilization" value="63%" trend="+1.2%" subValue="vs last 24h" info />
-            <StatCard title="Available capacity" value="1,240" trend="Chips" subValue="vs last 24h" info />
-            <StatCard title="Stranded capacity" value="4.2%" trend="-0.5%" subValue="vs last 24h" info />
-            <StatCard title="Total cost / hr" value="$14.2k" trend="Within budget" subValue="vs last 24h" info />
           </div>
 
           {/* Disruption Insights */}
@@ -430,6 +486,37 @@ export default function App() {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* Key Observability Metrics */}
+          <div className="mt-8">
+            <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider mb-4">Key observability metrics</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <MetricTimeSeriesCard 
+                title="Top 5 GPU Temperature" 
+                value="68" 
+                unit="°C"
+                data={top5GpuData}
+                dataKeys={['g1', 'g2', 'g3', 'g4', 'g5']}
+                color="#10b981"
+              />
+              <MetricTimeSeriesCard 
+                title="Top 5 GPU Power" 
+                value="310" 
+                unit="W"
+                data={top5GpuData}
+                dataKeys={['p1', 'p2', 'p3', 'p4', 'p5']}
+                color="#f59e0b"
+              />
+              <MetricTimeSeriesCard 
+                title="Top 5 SM utilization" 
+                value="85" 
+                unit="%"
+                data={top5GpuData}
+                dataKeys={['s1', 's2', 's3', 's4', 's5']}
+                color="#3b82f6"
+              />
             </div>
           </div>
         </main>
